@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "pytorch"
+version = "0.1.0"
+description = ""
+authors = ["Siva Chaganti"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+torch = "^2.2.2"
+torchsummary = "^1.5.1"
+numpy = "^1.26.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
