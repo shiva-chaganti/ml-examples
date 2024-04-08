@@ -10,6 +10,8 @@ python = "^3.10"
 torch = "^2.2.2"
 torchsummary = "^1.5.1"
 numpy = "^1.26.4"
+h5py = "^3.10.0"
+pip = "^24.0"
 
 
 [build-system]
