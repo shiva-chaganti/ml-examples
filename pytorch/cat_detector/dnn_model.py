@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
+from sklearn.metrics import precision_score, recall_score, accuracy_score
 
 from load_data import get_data_loader
 
@@ -43,25 +44,34 @@ def train(model: CatDetectorDNN, num_epochs: int, train_loader: DataLoader, mode
     print(f"Model saved to {model_save_path}")
 
 
-def eval(model: CatDetectorDNN, test_loader: DataLoader):
-    correct = 0
-    total = 0
+def evaluate_model(model: CatDetectorDNN, test_loader: DataLoader):
+    model.eval()
+    y_pred = []
+    y_true = []
+
     with torch.no_grad():
         for images, labels in test_loader:
             outputs = model(images)
             predicted = outputs.round()
-            total += labels.size(0)
-            correct += (predicted == labels).sum().item()
+            y_pred.extend(predicted.view(-1).tolist())
+            y_true.extend(labels.view(-1).tolist())
+    
+    y_pred = torch.tensor(y_pred)
+    y_true = torch.tensor(y_true)
 
-    print(f'Accuracy on the test set: {100 * correct / total}%')
+    precision = precision_score(y_true, y_pred)
+    recall = recall_score(y_true, y_pred)
+    accuracy = accuracy_score(y_true, y_pred)
+
+    print(f"Accuracy: {accuracy:.4f}, Precision: {precision:.4f}, Recall: {recall:.4f}")
 
 
 def main():
     # Assuming images are of size 64x64x3, adjust if your images are of a different size
     input_size = 64 * 64 * 3
-    train_data_path = 'pytorch/cat_detector/datasets/train_catvnoncat.h5'
-    test_data_path = 'pytorch/cat_detector/datasets/test_catvnoncat.h5'
-    model_save_path = 'pytorch/cat_detector/model_state_dict.pth'
+    train_data_path = 'cat_detector/datasets/train_catvnoncat.h5'
+    test_data_path = 'cat_detector/datasets/test_catvnoncat.h5'
+    model_save_path = 'cat_detector/model_state_dict.pth'
     batch_size = 64
 
     model = CatDetectorDNN(input_size)
@@ -71,6 +81,6 @@ def main():
     
     train(model=model, num_epochs=10, train_loader=train_loader, model_save_path=model_save_path)
     model.load_state_dict(torch.load(model_save_path))
-    eval(model=model, test_loader=test_loader)
+    evaluate_model(model=model, test_loader=test_loader)
 
 main()

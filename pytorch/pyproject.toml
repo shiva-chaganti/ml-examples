@@ -12,6 +12,7 @@ torchsummary = "^1.5.1"
 numpy = "^1.26.4"
 h5py = "^3.10.0"
 pip = "^24.0"
+scikit-learn = "^1.4.2"
 
 
 [build-system]
