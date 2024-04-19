@@ -1,14 +1,8 @@
-
-from functools import partial
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torchsummary import summary
 from torch.utils.data import DataLoader
-
 from sklearn.metrics import accuracy_score, precision_score, recall_score
-
-from load_data import get_fmnist_dataset, get_data_loader
 
 
 class FMnistClassifierLeNet(nn.Module):
@@ -117,21 +111,3 @@ def evaluate_model(model: FMnistClassifierLeNet, test_loader: DataLoader, device
     recall = recall_score(y_true, y_pred, average='weighted')
     
     print(f'Accuracy: {accuracy:.4f}, Precision: {precision:.4f}, Recall: {recall:.4f}')
-
-def main():
-    num_classes = 10
-    data_download_path = 'f_mnist/datasets'
-    model_save_path = 'f_mnist/model_state_dict.pth'
-    batch_size = 64
-
-    get_dataset_fn = partial(get_fmnist_dataset, data_download_path)
-    train_loader, test_loader = get_data_loader(get_datasets_fn=get_dataset_fn(), batch_size=batch_size)
-
-
-    model = FMnistClassifierLeNet(num_classes)
-    print("Summary: \n")
-    print(f'{summary(model, (1, 32, 32))}')
-    train(model=model, num_epochs=10, train_loader=train_loader, model_save_path=model_save_path)
-    model.load_state_dict(torch.load(model_save_path))
-    evaluate_model(model=model, test_loader=test_loader)
-main()
