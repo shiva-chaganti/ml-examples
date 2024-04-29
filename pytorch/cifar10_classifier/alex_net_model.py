@@ -92,7 +92,7 @@ def train(model: FinetunedAlexNet, train_loader: DataLoader, num_epochs: int, mo
     print(f"Model saved to {model_save_path}")
  
 
-def evaluate_model(model: models.alexnet, test_loader: DataLoader, device: str='cpu'):
+def evaluate_model(model: FinetunedAlexNet, test_loader: DataLoader, device: str='cpu'):
     model.to(device)
     model.eval()
     
